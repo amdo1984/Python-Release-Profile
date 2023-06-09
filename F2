@@ -1,0 +1,33 @@
+import numpy as np
+
+from matplotlib import pyplot as plt
+from scipy.optimize import curve_fit
+
+from sklearn.metrics import r2_score
+
+
+# time series
+t = [5, 15, 20, 30, 45, 60]
+# cummulative release series
+cum1 = [15.0, 25.0, 35.0, 50.0, 70.0, 85.0] 
+
+cum2 = [17.0, 22.0, 38.0, 55.0, 77.0, 87.0] 
+
+plt.plot(t, cum1, 'o')
+plt.plot(t, cum2, '*')
+plt.title("Sample Visualization")
+plt.show()
+
+### F2 Calcualtions ###
+
+
+def calculate_f2(reference_profile, test_profile):
+    n = len(reference_profile)
+    sum_squared_diff = sum((reference_profile[i] - test_profile[i])**2 for i in range(n))    
+    f2 = 50 * np.log10 ( ((1 + (1/n) * sum_squared_diff)**-0.5) * 100)
+    return f2
+
+
+f2_value = calculate_f2(cum1, cum2)
+print("Similarity Factor (f2):", f2_value)
+

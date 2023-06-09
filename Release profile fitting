@@ -1,0 +1,190 @@
+import numpy as np
+
+from matplotlib import pyplot as plt
+from scipy.optimize import curve_fit
+
+from sklearn.metrics import r2_score
+
+
+# time series
+t = [0, 5, 15, 30, 60]
+# cummulative release series
+cum = [0, 0.3, 0.91, 0.94, 1.91] 
+
+plt.plot(t, cum, 'o')
+plt.title("Sample Visualization")
+plt.show()
+
+# This is the function we are trying to fit to the data.
+
+
+
+############################# ZERO ORDER ##############################
+#def ZeroOrder(t, k, Q0):
+#     return  k * t + Q0
+
+#The model
+def ZeroOrder(t, k):
+     return  k * t
+
+# curve fit ZeroOrder
+popt, _ = curve_fit(ZeroOrder, t, cum)
+# summarize the parameter values
+k0 = popt
+
+print('ZERO ORDER FITTING')
+print('The fitting equation is: ')
+print(f'Qt = {k0} t')
+
+
+#calcualte predicted value
+cum_pred0 = ZeroOrder(t, k0)
+#calculate R square
+r2 = r2_score(cum, cum_pred0)
+
+print(f'r2 = {r2}')
+
+# plot input vs 
+print('GRAPH OF ZERO ORDER FITTING')
+plt.scatter(t, cum)
+# define a sequence of inputs between the smallest and largest known inputs
+x_line = np.arange(min(t), max(t), 1)
+# calculate the output for the range
+y_line = ZeroOrder(x_line, k0)
+# create a line plot for the mapping function
+plt.plot(x_line, y_line, '+', color='red')
+plt.show()
+###########################################################
+
+############################# FIRST ORDER ##############################
+
+def FirstOrder(t, k):      
+     return  100 * (1 - np.e **(-k*t))
+
+# curve fit FirstOrder
+popt, _ = curve_fit(FirstOrder, t, cum)
+# summarize the parameter values
+k1 = popt
+
+print('FIRST ORDER FITTING')
+print('The fitting equation is: ')
+print(f'Qt = 100 * (1- e**(-{k1} t)')
+
+#calcualte predicted value
+cum_pred1 = FirstOrder(t, k1)
+
+#calculate R square
+r2 = r2_score(cum, cum_pred1)
+
+print(f'r2 = {r2}')
+
+# plot input vs output
+plt.scatter(t, cum)
+# define a sequence of inputs between the smallest and largest known inputs
+x_line = np.arange(min(t), max(t), 1)
+# calculate the output for the range
+y_line = FirstOrder(x_line, k1)
+# create a line plot for the mapping function
+plt.plot(x_line, y_line, '*', color='red')
+plt.show()
+##############################################################
+
+############################# HIGUCHI ##############################
+
+def Higuchi(t, k):      
+     return  k * np.sqrt(t)
+
+# curve fit 
+popt, _ = curve_fit(Higuchi, t, cum)
+# summarize the parameter values
+k_h = popt
+
+print('HIGUCHI FITTING')
+print('The fitting equation is: ')
+print(f'Qt = {k_h} t**0.5)')
+
+#calcualte predicted value
+cum_pred_h = Higuchi(t, k_h)
+
+#calculate R square
+r2 = r2_score(cum, cum_pred_h)
+
+print(f'r2 = {r2}')
+
+# plot input vs output
+plt.scatter(t, cum)
+# define a sequence of inputs between the smallest and largest known inputs
+x_line = np.arange(min(t), max(t), 1)
+# calculate the output for the range
+y_line = Higuchi(x_line, k_h)
+# create a line plot for the mapping function
+plt.plot(x_line, y_line, 'x', color='red')
+plt.show()
+##############################################################
+
+############################# Hixson-Crowell (HC) ##############################
+
+def HC(t, k):      
+     return  100 * (1 - ((1 - k * t)**3))
+
+# curve fit 
+popt, _ = curve_fit(HC, t, cum)
+# summarize the parameter values
+k_hc = popt
+
+print('Hixson-Crowell FITTING')
+print('The fitting equation is: ')
+print(f'Qt = 100 * (1 - (1 - {k_hc} t)**3)')
+
+#calcualte predicted value
+cum_pred_hc = HC(t, k_hc)
+
+#calculate R square
+r2 = r2_score(cum, cum_pred_hc)
+
+print(f'r2 = {r2}')
+
+# plot input vs output
+plt.scatter(t, cum)
+# define a sequence of inputs between the smallest and largest known inputs
+x_line = np.arange(min(t), max(t), 1)
+# calculate the output for the range
+y_line = HC(x_line, k_hc)
+# create a line plot for the mapping function
+plt.plot(x_line, y_line, '*', color='red')
+plt.show()
+##############################################################
+
+############################# Korsmeyer-Peppas (KP) ##############################
+
+def KP(t, k, n):      
+     return  k * (t**n)
+
+# curve fit 
+popt, _ = curve_fit(KP, t, cum)
+# summarize the parameter values
+k_kp, n = popt
+
+print('Korsmeyer-Peppas FITTING')
+print('The fitting equation is: ')
+print(f'Qt = {k_kp} t**{n})')
+
+#calcualte predicted value
+cum_pred_kp = KP(t, k_kp, n)
+
+#calculate R square
+r2 = r2_score(cum, cum_pred_kp)
+
+print(f'r2 = {r2}')
+print(f'n = {n}')
+
+# plot input vs output
+plt.scatter(t, cum)
+# define a sequence of inputs between the smallest and largest known inputs
+x_line = np.arange(min(t), max(t), 1)
+# calculate the output for the range
+y_line = KP(x_line, k_kp, n)
+# create a line plot for the mapping function
+plt.plot(x_line, y_line, 'x', color='red')
+plt.show()
+##############################################################
